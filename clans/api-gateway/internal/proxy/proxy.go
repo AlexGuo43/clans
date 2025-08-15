@@ -39,7 +39,11 @@ func (g *Gateway) RouteRequest(w http.ResponseWriter, r *http.Request) {
 
 func (g *Gateway) getServiceForPath(path string) *config.ServiceConfig {
 	switch {
-	case strings.HasPrefix(path, "/api/auth/") || strings.HasPrefix(path, "/api/users/"):
+	case strings.HasPrefix(path, "/api/auth/"):
+		return &g.config.UserService
+	case strings.HasPrefix(path, "/api/users/clans"):
+		return &g.config.ClanService
+	case strings.HasPrefix(path, "/api/users/"):
 		return &g.config.UserService
 	case strings.HasPrefix(path, "/api/posts"):
 		return &g.config.PostService
