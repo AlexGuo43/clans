@@ -14,7 +14,7 @@ type Comment struct {
 	Depth        int       `json:"depth"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
-	Replies      []Comment `json:"replies,omitempty"`
+	Replies      []*Comment `json:"replies,omitempty"`
 }
 
 type CommentVote struct {

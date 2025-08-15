@@ -62,7 +62,39 @@ func (s *CommentService) GetCommentsByPost(postID, page, limit int) ([]*models.C
 	}
 
 	offset := (page - 1) * limit
-	return s.Repo.GetCommentsByPost(postID, limit, offset)
+	flatComments, err := s.Repo.GetCommentsByPost(postID, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.buildCommentTree(flatComments), nil
+}
+
+func (s *CommentService) buildCommentTree(flatComments []*models.Comment) []*models.Comment {
+	commentMap := make(map[int]*models.Comment)
+	var rootComments []*models.Comment
+
+	// First pass: create map and initialize replies slice
+	for _, comment := range flatComments {
+		comment.Replies = make([]*models.Comment, 0)
+		commentMap[comment.ID] = comment
+	}
+
+	// Second pass: build tree structure
+	for _, comment := range flatComments {
+		if comment.ParentID != nil {
+			// This is a reply
+			parentID := *comment.ParentID
+			if parent, exists := commentMap[parentID]; exists {
+				parent.Replies = append(parent.Replies, comment)
+			}
+		} else {
+			// This is a top-level comment
+			rootComments = append(rootComments, comment)
+		}
+	}
+
+	return rootComments
 }
 
 func (s *CommentService) GetReplies(parentID, page, limit int) ([]*models.Comment, error) {
@@ -123,30 +155,3 @@ func (s *CommentService) RemoveVote(userID, commentID int) error {
 	return s.Repo.RemoveVote(userID, commentID)
 }
 
-// BuildCommentTree builds a hierarchical tree of comments
-func (s *CommentService) BuildCommentTree(comments []*models.Comment) []models.Comment {
-	commentMap := make(map[int]*models.Comment)
-	var rootComments []models.Comment
-
-	// First pass: create map of all comments
-	for _, comment := range comments {
-		commentCopy := *comment
-		commentCopy.Replies = make([]models.Comment, 0)
-		commentMap[comment.ID] = &commentCopy
-	}
-
-	// Second pass: build tree structure
-	for _, comment := range comments {
-		if comment.ParentID == nil {
-			// Root level comment
-			rootComments = append(rootComments, *commentMap[comment.ID])
-		} else {
-			// Child comment - add to parent's replies
-			if parent, exists := commentMap[*comment.ParentID]; exists {
-				parent.Replies = append(parent.Replies, *commentMap[comment.ID])
-			}
-		}
-	}
-
-	return rootComments
-}

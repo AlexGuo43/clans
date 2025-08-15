@@ -85,8 +85,6 @@ func (h *CommentHandler) GetCommentsByPost(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	buildTree := r.URL.Query().Get("tree") == "true"
-
 	comments, err := h.CommentService.GetCommentsByPost(postID, page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -94,13 +92,7 @@ func (h *CommentHandler) GetCommentsByPost(w http.ResponseWriter, r *http.Reques
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	
-	if buildTree {
-		tree := h.CommentService.BuildCommentTree(comments)
-		json.NewEncoder(w).Encode(tree)
-	} else {
-		json.NewEncoder(w).Encode(comments)
-	}
+	json.NewEncoder(w).Encode(comments)
 }
 
 func (h *CommentHandler) GetReplies(w http.ResponseWriter, r *http.Request) {
