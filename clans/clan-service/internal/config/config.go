@@ -39,7 +39,7 @@ func LoadConfig() *Config {
 			DBName:   getEnv("DB_NAME", "clans"),
 		},
 		Server: ServerConfig{
-			Port: getEnv("PORT", "8003"),
+			Port: getEnv("PORT", "8083"),
 		},
 	}
 }

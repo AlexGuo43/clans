@@ -69,7 +69,8 @@ func (g *Gateway) buildTargetURL(service *config.ServiceConfig, r *http.Request)
 		// Keep the full path for comment-service as it expects /api/comments
 		// targetPath = strings.TrimPrefix(targetPath, "/api")
 	case "clan-service":
-		targetPath = strings.TrimPrefix(targetPath, "/api")
+		// Keep the full path for clan-service as it expects /api/clans
+		// targetPath = strings.TrimPrefix(targetPath, "/api")
 	}
 
 	targetURL := fmt.Sprintf("%s%s", service.URL, targetPath)

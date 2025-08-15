@@ -43,6 +43,7 @@ func isPublicEndpoint(path, method string) bool {
 		"/api/auth/signup":     {"POST"},
 		"/api/auth/login":      {"POST"},
 		"/api/posts":           {"GET"},
+		"/api/clans":           {"GET"},
 		"/health":              {"GET"},
 	}
 
