@@ -43,6 +43,8 @@ func (g *Gateway) getServiceForPath(path string) *config.ServiceConfig {
 		return &g.config.UserService
 	case strings.HasPrefix(path, "/api/posts"):
 		return &g.config.PostService
+	case strings.HasPrefix(path, "/api/comments"):
+		return &g.config.CommentService
 	case strings.HasPrefix(path, "/api/clans"):
 		return &g.config.ClanService
 	default:
@@ -62,6 +64,9 @@ func (g *Gateway) buildTargetURL(service *config.ServiceConfig, r *http.Request)
 		}
 	case "post-service":
 		// Keep the full path for post-service as it expects /api/posts
+		// targetPath = strings.TrimPrefix(targetPath, "/api")
+	case "comment-service":
+		// Keep the full path for comment-service as it expects /api/comments
 		// targetPath = strings.TrimPrefix(targetPath, "/api")
 	case "clan-service":
 		targetPath = strings.TrimPrefix(targetPath, "/api")

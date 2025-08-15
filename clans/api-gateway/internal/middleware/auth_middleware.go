@@ -50,6 +50,10 @@ func isPublicEndpoint(path, method string) bool {
 		return true
 	}
 
+	if strings.HasPrefix(path, "/api/comments/") && method == "GET" {
+		return true
+	}
+
 	if strings.HasPrefix(path, "/api/clans/") && method == "GET" {
 		return true
 	}

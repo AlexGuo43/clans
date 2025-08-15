@@ -13,12 +13,13 @@ type ServiceConfig struct {
 }
 
 type Config struct {
-	Port         string
-	JWTSecret    string
-	UserService  ServiceConfig
-	PostService  ServiceConfig
-	ClanService  ServiceConfig
-	Services     []ServiceConfig
+	Port            string
+	JWTSecret       string
+	UserService     ServiceConfig
+	PostService     ServiceConfig
+	CommentService  ServiceConfig
+	ClanService     ServiceConfig
+	Services        []ServiceConfig
 }
 
 func LoadConfig() *Config {
@@ -36,20 +37,27 @@ func LoadConfig() *Config {
 		URL:  getEnv("POST_SERVICE_URL", "http://post-service:8081"),
 	}
 
+	commentService := ServiceConfig{
+		Name: "comment-service",
+		URL:  getEnv("COMMENT_SERVICE_URL", "http://comment-service:8082"),
+	}
+
 	clanService := ServiceConfig{
 		Name: "clan-service",
-		URL:  getEnv("CLAN_SERVICE_URL", "http://clan-service:8082"),
+		URL:  getEnv("CLAN_SERVICE_URL", "http://clan-service:8083"),
 	}
 
 	return &Config{
-		Port:        getEnv("PORT", "8000"),
-		JWTSecret:   getEnv("JWT_SECRET", "mysecretkey"),
-		UserService: userService,
-		PostService: postService,
-		ClanService: clanService,
+		Port:           getEnv("PORT", "8000"),
+		JWTSecret:      getEnv("JWT_SECRET", "mysecretkey"),
+		UserService:    userService,
+		PostService:    postService,
+		CommentService: commentService,
+		ClanService:    clanService,
 		Services: []ServiceConfig{
 			userService,
 			postService,
+			commentService,
 			clanService,
 		},
 	}

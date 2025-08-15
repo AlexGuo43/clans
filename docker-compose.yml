@@ -22,10 +22,12 @@ services:
     depends_on:
       - user-service
       - post-service
+      - comment-service
     environment:
       - USER_SERVICE_URL=http://user-service:8080
       - POST_SERVICE_URL=http://post-service:8081
-      - CLAN_SERVICE_URL=http://clan-service:8082
+      - COMMENT_SERVICE_URL=http://comment-service:8082
+      - CLAN_SERVICE_URL=http://clan-service:8083
       - JWT_SECRET=mysecretkey
 
   user-service:
@@ -49,6 +51,21 @@ services:
     restart: always
     expose:
       - "8081"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=adminpass
+      - DB_NAME=clans
+
+  comment-service:
+    build: ./clans/comment-service
+    container_name: comment-service-clans
+    restart: always
+    expose:
+      - "8082"
     depends_on:
       - postgres
     environment:
