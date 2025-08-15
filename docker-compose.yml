@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   postgres:
-    image: postgres:15
+    image: postgres:latest
     container_name: postgres-clans
     restart: always
     environment:
@@ -13,12 +13,42 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  api-gateway:
+    build: ./clans/api-gateway
+    container_name: api-gateway-clans
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user-service
+      - post-service
+    environment:
+      - USER_SERVICE_URL=http://user-service:8080
+      - POST_SERVICE_URL=http://post-service:8081
+      - CLAN_SERVICE_URL=http://clan-service:8082
+      - JWT_SECRET=mysecretkey
+
   user-service:
     build: ./clans/user-service
     container_name: user-service-clans
     restart: always
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=adminpass
+      - DB_NAME=clans
+
+  post-service:
+    build: ./clans/post-service
+    container_name: post-service-clans
+    restart: always
+    expose:
+      - "8081"
     depends_on:
       - postgres
     environment:
