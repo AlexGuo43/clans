@@ -23,6 +23,7 @@ services:
       - user-service
       - post-service
       - comment-service
+      - clan-service
     environment:
       - USER_SERVICE_URL=http://user-service:8080
       - POST_SERVICE_URL=http://post-service:8081
@@ -66,6 +67,21 @@ services:
     restart: always
     expose:
       - "8082"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=adminpass
+      - DB_NAME=clans
+
+  clan-service:
+    build: ./clans/clan-service
+    container_name: clan-service-clans
+    restart: always
+    expose:
+      - "8083"
     depends_on:
       - postgres
     environment:
