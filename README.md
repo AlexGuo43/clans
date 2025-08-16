@@ -2,6 +2,10 @@
 
 A Reddit-style community platform built with Go microservices architecture, featuring clans (communities), threaded comments, voting systems, and user management.
 
+## Quick Deploy
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/clans-reddit-clone)
+
 ## Architecture Overview
 
 ```
